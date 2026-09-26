@@ -3,63 +3,1359 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AIPPOA Badulla District Digital Membership ID</title>
+
+<title>AIPPOA Sri Lanka - Digital Membership ID</title>
+
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#176b2c">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f3f8f3;color:#16301c}
-.top{background:linear-gradient(135deg,#116b2a,#2f9e44);color:#fff;padding:22px 16px;text-align:center}.logo{width:86px;height:86px;object-fit:contain;border-radius:50%;background:#fff;padding:3px}.top h1{margin:10px 0 4px;font-size:24px}.top p{margin:0;opacity:.95}
-.wrap{max-width:620px;margin:24px auto;padding:0 15px}.panel{background:#fff;border-radius:18px;padding:22px;box-shadow:0 5px 22px #00000012}.panel h2{margin:0 0 8px;color:#145c28}.hint{color:#64748b;font-size:14px;line-height:1.5}.input{width:100%;padding:15px 14px;border:1px solid #c8d3df;border-radius:12px;font-size:18px;text-transform:uppercase;margin-top:12px}.btn{border:0;border-radius:11px;padding:13px 18px;background:#176b2c;color:#fff;font-size:16px;font-weight:700;cursor:pointer;margin-top:12px}.btn.secondary{background:#e8f3eb;color:#176b2c}.install{display:none;width:100%}.status{margin-top:14px;padding:12px;border-radius:10px;display:none}.error{background:#fff0f0;color:#b42318}.success{background:#e9f7ed;color:#176b2c}
-.card{display:none;margin-top:20px;background:linear-gradient(135deg,#145c28,#43a047);color:#fff;border-radius:22px;padding:20px;box-shadow:0 12px 35px #0003}.card.show{display:block}.cardhead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.brand{font-weight:800;font-size:17px;line-height:1.25}.valid{background:#e9fff0;color:#176b2c;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:800;white-space:nowrap}.memberrow{display:flex;gap:15px;margin-top:20px}.photo{width:92px;height:112px;object-fit:cover;border-radius:10px;border:2px solid #fff;background:#ddd}.details h2{font-size:20px;margin:0 0 6px}.details p{margin:6px 0;font-size:13px;line-height:1.35}.expiry{margin-top:14px;padding:10px;border-radius:10px;background:#ffffff1f;font-weight:700}.qrbox{background:#fff;padding:8px;border-radius:9px;width:105px;height:105px;margin-top:15px}.qrnote{font-size:11px;margin:7px 0 0}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}.footer{text-align:center;color:#64748b;font-size:12px;padding:30px 15px 45px}.privacy{font-size:12px;color:#64748b;margin-top:14px;line-height:1.45}
+*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#f3f8f3;
+color:#16301c
+}
+
+.top{
+background:linear-gradient(135deg,#116b2a,#2f9e44);
+color:#fff;
+padding:22px 16px;
+text-align:center
+}
+
+.logo{
+width:86px;
+height:86px;
+object-fit:contain;
+border-radius:50%;
+background:#fff;
+padding:3px
+}
+
+.top h1{
+margin:10px 0 4px;
+font-size:24px
+}
+
+.top p{
+margin:0
+}
+
+.wrap{
+max-width:620px;
+margin:24px auto;
+padding:0 15px
+}
+
+.panel{
+background:#fff;
+border-radius:18px;
+padding:22px;
+box-shadow:0 5px 22px #00000012;
+margin-bottom:20px
+}
+
+.panel h2{
+margin:0 0 8px;
+color:#145c28
+}
+
+.hint{
+color:#64748b;
+font-size:14px;
+line-height:1.5
+}
+
+.input,
+.admin input,
+.admin select{
+width:100%;
+padding:14px;
+border:1px solid #c8d3df;
+border-radius:12px;
+font-size:16px;
+margin-top:10px;
+margin-bottom:8px
+}
+
+.btn{
+border:0;
+border-radius:11px;
+padding:13px 18px;
+background:#176b2c;
+color:#fff;
+font-size:16px;
+font-weight:700;
+cursor:pointer;
+margin-top:10px
+}
+
+.btn.secondary{
+background:#e8f3eb;
+color:#176b2c
+}
+
+.btn.red{
+background:#b42318
+}
+
+.status{
+margin-top:14px;
+padding:12px;
+border-radius:10px;
+display:none
+}
+
+.error{
+background:#fff0f0;
+color:#b42318
+}
+
+.success{
+background:#e9f7ed;
+color:#176b2c
+}
+
+.card{
+display:none;
+margin-top:20px;
+background:linear-gradient(135deg,#145c28,#43a047);
+color:#fff;
+border-radius:22px;
+padding:20px;
+box-shadow:0 12px 35px #0003
+}
+
+.card.show{
+display:block
+}
+
+.cardhead{
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
+gap:10px
+}
+
+.brand{
+font-weight:800;
+font-size:17px;
+line-height:1.25
+}
+
+.valid{
+background:#e9fff0;
+color:#176b2c;
+border-radius:999px;
+padding:7px 10px;
+font-size:12px;
+font-weight:800
+}
+
+.memberrow{
+display:flex;
+gap:15px;
+margin-top:20px
+}
+
+.photo{
+width:92px;
+height:112px;
+object-fit:cover;
+border-radius:10px;
+border:2px solid #fff;
+background:#ddd
+}
+
+.details h2{
+font-size:20px;
+margin:0 0 6px
+}
+
+.details p{
+margin:6px 0;
+font-size:13px;
+line-height:1.35
+}
+
+.expiry{
+margin-top:14px;
+padding:10px;
+border-radius:10px;
+background:#ffffff1f;
+font-weight:700
+}
+
+.qrbox{
+background:#fff;
+padding:8px;
+border-radius:9px;
+width:105px;
+height:105px;
+margin-top:15px
+}
+
+.qrnote{
+font-size:11px
+}
+
+.actions{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+margin-top:15px
+}
+
+.footer{
+text-align:center;
+color:#64748b;
+font-size:12px;
+padding:30px 15px 45px
+}
+
+.admin{
+display:none
+}
+
+.admin.show{
+display:block
+}
+
+.member-list{
+margin-top:18px
+}
+
+.member-item{
+background:#f6faf7;
+border:1px solid #dce8df;
+border-radius:12px;
+padding:12px;
+margin-bottom:10px
+}
+
+.member-item strong{
+color:#145c28
+}
+
+.small{
+font-size:12px;
+color:#64748b
+}
+
+.admin-actions{
+display:flex;
+gap:7px;
+flex-wrap:wrap
+}
+
+.hidden{
+display:none
+}
+
+@media(max-width:480px){
+
+.memberrow{
+align-items:flex-start
+}
+
+.photo{
+width:80px;
+height:100px
+}
+
+.details h2{
+font-size:17px
+}
+
+}
+
+@media print{
+
+body{
+background:#fff
+}
+
+.top,
+.wrap>section:first-child,
+.footer,
+.actions,
+.admin{
+display:none!important
+}
+
+.card{
+display:block!important;
+box-shadow:none;
+margin:0;
+max-width:500px
+}
+
+}
 </style>
 </head>
+
 <body>
-<header class="top"><img class="logo" src="aippoa-badulla-logo.jpg" alt="AIPPOA Badulla District Logo"><h1>AIPPOA SRI LANKA</h1><p>Badulla District • Digital Membership ID</p></header>
+
+<header class="top">
+
+<img
+class="logo"
+src="aippoa-badulla-logo.jpg"
+alt="AIPPOA Logo">
+
+<h1>AIPPOA SRI LANKA</h1>
+
+<p>Badulla District • Digital Membership ID</p>
+
+</header>
+
+
 <main class="wrap">
+
+
+<!-- MEMBER LOGIN -->
+
 <section class="panel">
+
 <h2>Member Login</h2>
-<p class="hint">Enter your AIPPOA Badulla District membership number to view your digital ID.</p>
-<input id="membershipInput" class="input" autocomplete="off" autocapitalize="characters" placeholder="e.g. BD2008" aria-label="Membership number">
-<button class="btn" id="viewBtn">View Digital ID</button>
-<button class="btn install" id="installBtn">📲 Install AIPPOA Badulla App</button>
+
+<p class="hint">
+Enter your AIPPOA Badulla District membership number to view your digital ID.
+</p>
+
+<input
+id="membershipInput"
+class="input"
+autocomplete="off"
+autocapitalize="characters"
+placeholder="e.g. BD2008">
+
+<button class="btn" id="viewBtn">
+View Digital ID
+</button>
+
 <div id="status" class="status"></div>
-<p class="privacy">Only the membership number is required to open an ID. NIC and phone numbers are not displayed in this app.</p>
+
+<p class="small">
+Only the membership number is required to open an ID.
+</p>
+
 </section>
-<section id="card" class="card" aria-live="polite">
-<div class="cardhead"><div><img src="aippoa-badulla-logo.jpg" style="width:44px;height:44px;object-fit:contain;border-radius:50%;background:#fff;padding:2px;vertical-align:middle;margin-right:8px"><span class="brand">AIPPOA BADULLA<br>DISTRICT</span></div><span class="valid">VALID MEMBER</span></div>
-<div class="memberrow"><img id="photo" class="photo" alt="Member photo"><div class="details"><h2 id="name"></h2><p id="pharmacy"></p><p id="address"></p><p><b>Membership:</b> <span id="membership"></span></p></div></div>
-<div class="expiry">Membership valid until: <strong>30 June 2027</strong></div>
-<div id="qr" class="qrbox"></div><p class="qrnote">Scan QR to open the app, then enter the membership number to view the ID.</p>
-<div class="actions"><button class="btn secondary" onclick="window.print()">🖨 Print / Save PDF</button><button class="btn secondary" onclick="hideCard()">Close ID</button></div>
+
+
+<!-- DIGITAL ID -->
+
+<section id="card" class="card">
+
+<div class="cardhead">
+
+<div>
+
+<img
+src="aippoa-badulla-logo.jpg"
+style="width:44px;height:44px;object-fit:contain;border-radius:50%;background:#fff;padding:2px;vertical-align:middle;margin-right:8px">
+
+<span class="brand">
+AIPPOA BADULLA<br>
+DISTRICT
+</span>
+
+</div>
+
+<span class="valid" id="validBadge">
+VALID MEMBER
+</span>
+
+</div>
+
+
+<div class="memberrow">
+
+<img
+id="photo"
+class="photo"
+alt="Member photo">
+
+<div class="details">
+
+<h2 id="name"></h2>
+
+<p>
+<b>Pharmacy:</b>
+<span id="pharmacy"></span>
+</p>
+
+<p>
+<b>Address:</b>
+<span id="address"></span>
+</p>
+
+<p>
+<b>Membership:</b>
+<span id="membership"></span>
+</p>
+
+</div>
+
+</div>
+
+
+<div class="expiry">
+
+Membership valid until:
+<strong id="expiry"></strong>
+
+</div>
+
+
+<div id="qr" class="qrbox"></div>
+
+<p class="qrnote">
+Scan QR to open the AIPPOA Digital Membership page.
+</p>
+
+
+<div class="actions">
+
+<button
+class="btn secondary"
+onclick="window.print()">
+🖨 Print / Save PDF
+</button>
+
+<button
+class="btn secondary"
+onclick="hideCard()">
+Close ID
+</button>
+
+</div>
+
 </section>
+
+
+<!-- ADMIN -->
+
+<section class="panel">
+
+<h2>🔐 AIPPOA Admin</h2>
+
+<p class="hint">
+Authorized administrator access only.
+</p>
+
+
+<div id="adminLogin">
+
+<input
+id="adminEmail"
+class="input"
+type="email"
+placeholder="Admin email">
+
+<input
+id="adminPassword"
+class="input"
+type="password"
+placeholder="Password">
+
+<button
+class="btn"
+id="adminLoginBtn">
+Admin Login
+</button>
+
+<div
+id="adminStatus"
+class="status">
+</div>
+
+</div>
+
+
+<!-- ADMIN PANEL -->
+
+<div id="adminPanel" class="admin">
+
+<hr>
+
+<h3>Member Management</h3>
+
+<input id="editId" type="hidden">
+
+<input
+id="memberNo"
+placeholder="Membership No. e.g. BD2008">
+
+<input
+id="memberName"
+placeholder="Member Name">
+
+<input
+id="pharmacyName"
+placeholder="Pharmacy Name">
+
+<input
+id="memberAddress"
+placeholder="Address">
+
+<input
+id="photoUrl"
+placeholder="Photo URL">
+
+<select id="memberStatus">
+
+<option value="active">Active</option>
+
+<option value="inactive">Inactive</option>
+
+</select>
+
+<label>Expiry Date</label>
+
+<input
+id="expiryDate"
+type="date">
+
+<button
+class="btn"
+id="saveMemberBtn">
+➕ Add Member
+</button>
+
+<button
+class="btn secondary hidden"
+id="cancelEditBtn">
+Cancel Edit
+</button>
+
+<button
+class="btn red"
+id="logoutBtn">
+Logout
+</button>
+
+<div
+id="adminList"
+class="member-list">
+</div>
+
+</div>
+
+</section>
+
 </main>
-<div class="footer">AIPPOA Badulla District • Digital Membership ID</div>
+
+
+<div class="footer">
+
+AIPPOA Sri Lanka • Badulla District<br>
+Digital Membership ID System
+
+</div>
+
+
 <script>
-let members=[];let deferredPrompt=null;
-const EXPIRY='2027-06-30';
-const input=document.getElementById('membershipInput'), statusBox=document.getElementById('status'), card=document.getElementById('card');
-fetch('members.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{members=d}).catch(()=>showStatus('Unable to load membership records. Please try again.',false));
-function normalize(v){return String(v||'').trim().toUpperCase()}
-function esc(x){return String(x??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
-function showStatus(msg,ok){statusBox.style.display='block';statusBox.className='status '+(ok?'success':'error');statusBox.innerHTML=msg}
-function clearStatus(){statusBox.style.display='none';statusBox.textContent=''}
-function showCard(id){
- const m=members.find(x=>normalize(x.membership)===normalize(id));
- if(!m){card.classList.remove('show');showStatus('Membership number not found. Please check your number.',false);return}
- clearStatus();
- document.getElementById('name').textContent=m.name;document.getElementById('pharmacy').textContent=m.pharmacy;document.getElementById('address').textContent=m.address;document.getElementById('membership').textContent=m.membership;document.getElementById('photo').src=m.photo||'aippoa-badulla-logo.jpg';
- const qr=document.getElementById('qr');qr.innerHTML='';new QRCode(qr,{text:'AIPPOA BADULLA MEMBERSHIP '+m.membership,width:89,height:89});
- card.classList.add('show');card.scrollIntoView({behavior:'smooth',block:'start'});
+
+/* SUPABASE */
+
+const SUPABASE_URL =
+'https://meirpdnaezvbvjpivuqc.supabase.co';
+
+const SUPABASE_PUBLISHABLE_KEY =
+'sb_publishable_4kYlJdoX-NCIWEWkesOCOQ__1jlM0Fp';
+
+const ADMIN_UID =
+'dc64965b-88d2-4e8a-8438-61570793747e';
+
+const { createClient } = supabase;
+
+const db = createClient(
+SUPABASE_URL,
+SUPABASE_PUBLISHABLE_KEY
+);
+
+
+/* HELPERS */
+
+const input =
+document.getElementById('membershipInput');
+
+const statusBox =
+document.getElementById('status');
+
+const card =
+document.getElementById('card');
+
+
+function normalize(value){
+
+return String(value || '')
+.trim()
+.toUpperCase();
+
 }
-function hideCard(){card.classList.remove('show')}
-document.getElementById('viewBtn').addEventListener('click',()=>{const id=normalize(input.value);if(!id){showStatus('Please enter your membership number.',false);return}showCard(id)});
-input.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('viewBtn').click()});
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('installBtn').style.display='block'});
-document.getElementById('installBtn').addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;document.getElementById('installBtn').style.display='none'});
-if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+
+
+function formatDate(dateValue){
+
+if(!dateValue) return '';
+
+const d =
+new Date(dateValue + 'T00:00:00');
+
+return d.toLocaleDateString(
+'en-GB',
+{
+day:'numeric',
+month:'long',
+year:'numeric'
+}
+);
+
+}
+
+
+function showStatus(message,ok){
+
+statusBox.style.display='block';
+
+statusBox.className =
+'status ' +
+(ok ? 'success' : 'error');
+
+statusBox.textContent=message;
+
+}
+
+
+function clearStatus(){
+
+statusBox.style.display='none';
+
+statusBox.textContent='';
+
+}
+
+
+/* MEMBER LOOKUP */
+
+async function showMember(membershipNo){
+
+clearStatus();
+
+card.classList.remove('show');
+
+const id =
+normalize(membershipNo);
+
+if(!id){
+
+showStatus(
+'Please enter your membership number.',
+false
+);
+
+return;
+
+}
+
+
+showStatus(
+'Checking membership...',
+true
+);
+
+
+const {data,error} =
+await db.rpc(
+'get_member_by_number',
+{
+p_membership_no:id
+}
+);
+
+
+if(error){
+
+console.error(error);
+
+showStatus(
+'Unable to check membership. Please try again.',
+false
+);
+
+return;
+
+}
+
+
+const member =
+Array.isArray(data)
+? data[0]
+: data;
+
+
+if(!member){
+
+showStatus(
+'Membership number not found.',
+false
+);
+
+return;
+
+}
+
+
+const today =
+new Date()
+.toISOString()
+.slice(0,10);
+
+const expired =
+member.expiry_date &&
+member.expiry_date < today;
+
+const inactive =
+String(member.status || '')
+.toLowerCase() !== 'active';
+
+
+document.getElementById('name')
+.textContent =
+member.member_name || '';
+
+document.getElementById('pharmacy')
+.textContent =
+member.pharmacy_name || '';
+
+document.getElementById('address')
+.textContent =
+member.address || '';
+
+document.getElementById('membership')
+.textContent =
+member.membership_no || '';
+
+document.getElementById('expiry')
+.textContent =
+formatDate(member.expiry_date);
+
+
+const photo =
+document.getElementById('photo');
+
+photo.src =
+member.photo_url ||
+'aippoa-badulla-logo.jpg';
+
+
+const badge =
+document.getElementById('validBadge');
+
+
+if(expired || inactive){
+
+badge.textContent =
+expired ? 'EXPIRED' : 'INACTIVE';
+
+badge.style.color='#b42318';
+
+badge.style.background='#fff0f0';
+
+}else{
+
+badge.textContent='VALID MEMBER';
+
+badge.style.color='#176b2c';
+
+badge.style.background='#e9fff0';
+
+}
+
+
+/* QR */
+
+const qr =
+document.getElementById('qr');
+
+qr.innerHTML='';
+
+new QRCode(
+qr,
+{
+text:
+window.location.origin +
+window.location.pathname +
+'?member=' +
+encodeURIComponent(
+member.membership_no
+),
+width:89,
+height:89
+}
+);
+
+
+card.classList.add('show');
+
+clearStatus();
+
+card.scrollIntoView({
+behavior:'smooth',
+block:'start'
+});
+
+}
+
+
+/* MEMBER BUTTON */
+
+document
+.getElementById('viewBtn')
+.addEventListener(
+'click',
+()=>{
+showMember(input.value);
+}
+);
+
+
+input.addEventListener(
+'keydown',
+e=>{
+if(e.key==='Enter'){
+showMember(input.value);
+}
+}
+);
+
+
+/* QR OPEN */
+
+const urlParams =
+new URLSearchParams(
+window.location.search
+);
+
+const qrMember =
+urlParams.get('member');
+
+if(qrMember){
+
+input.value=qrMember;
+
+showMember(qrMember);
+
+}
+
+
+/* CLOSE */
+
+function hideCard(){
+
+card.classList.remove('show');
+
+}
+
+
+/* ADMIN LOGIN */
+
+const adminStatus =
+document.getElementById('adminStatus');
+
+
+document
+.getElementById('adminLoginBtn')
+.addEventListener(
+'click',
+async()=>{
+
+adminStatus.style.display='block';
+
+adminStatus.className=
+'status success';
+
+adminStatus.textContent=
+'Signing in...';
+
+
+const email =
+document.getElementById('adminEmail').value;
+
+const password =
+document.getElementById('adminPassword').value;
+
+
+const {data,error} =
+await db.auth.signInWithPassword({
+
+email:email,
+
+password:password
+
+});
+
+
+if(error){
+
+adminStatus.className=
+'status error';
+
+adminStatus.textContent=
+'Login failed. Please check your details.';
+
+return;
+
+}
+
+
+if(
+!data.user ||
+data.user.id !== ADMIN_UID
+){
+
+await db.auth.signOut();
+
+adminStatus.className=
+'status error';
+
+adminStatus.textContent=
+'This account is not authorized as AIPPOA administrator.';
+
+return;
+
+}
+
+
+adminStatus.style.display='none';
+
+document
+.getElementById('adminLogin')
+.style.display='none';
+
+document
+.getElementById('adminPanel')
+.classList.add('show');
+
+loadMembers();
+
+}
+);
+
+
+/* LOAD MEMBERS */
+
+async function loadMembers(){
+
+const list =
+document.getElementById('adminList');
+
+list.innerHTML =
+'<p>Loading members...</p>';
+
+
+const {data,error} =
+await db
+.from('members')
+.select('*')
+.order(
+'membership_no',
+{ascending:true}
+);
+
+
+if(error){
+
+list.innerHTML =
+'<p class="small">Unable to load members.</p>';
+
+console.error(error);
+
+return;
+
+}
+
+
+if(!data || data.length===0){
+
+list.innerHTML =
+'<p class="small">No members added yet.</p>';
+
+return;
+
+}
+
+
+list.innerHTML='';
+
+
+data.forEach(member=>{
+
+const div =
+document.createElement('div');
+
+div.className='member-item';
+
+div.innerHTML=`
+
+<strong>
+${escapeHtml(member.membership_no)}
+</strong>
+
+<br>
+
+${escapeHtml(member.member_name || '')}
+
+<br>
+
+<span class="small">
+
+${escapeHtml(member.pharmacy_name || '')}
+
+<br>
+
+Status:
+${escapeHtml(member.status || '')}
+
+<br>
+
+Expiry:
+${escapeHtml(
+formatDate(member.expiry_date)
+)}
+
+</span>
+
+<div class="admin-actions">
+
+<button
+class="btn secondary"
+onclick="editMember('${member.id}')">
+✏️ Edit
+</button>
+
+<button
+class="btn red"
+onclick="deleteMember('${member.id}')">
+🗑 Delete
+</button>
+
+</div>
+`;
+
+list.appendChild(div);
+
+});
+
+}
+
+
+function escapeHtml(value){
+
+return String(value ?? '')
+.replace(/[&<>'"]/g,c=>({
+
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+"'":'&#39;',
+'"':'&quot;'
+
+}[c]));
+
+}
+
+
+/* SAVE MEMBER */
+
+document
+.getElementById('saveMemberBtn')
+.addEventListener(
+'click',
+saveMember
+);
+
+
+async function saveMember(){
+
+const id =
+document.getElementById('editId').value;
+
+
+const member={
+
+membership_no:
+normalize(
+document.getElementById('memberNo').value
+),
+
+member_name:
+document
+.getElementById('memberName')
+.value.trim(),
+
+pharmacy_name:
+document
+.getElementById('pharmacyName')
+.value.trim(),
+
+address:
+document
+.getElementById('memberAddress')
+.value.trim(),
+
+photo_url:
+document
+.getElementById('photoUrl')
+.value.trim(),
+
+status:
+document
+.getElementById('memberStatus')
+.value,
+
+expiry_date:
+document
+.getElementById('expiryDate')
+.value
+
+};
+
+
+if(
+!member.membership_no ||
+!member.member_name ||
+!member.pharmacy_name ||
+!member.expiry_date
+){
+
+alert(
+'Please enter Membership No., Name, Pharmacy and Expiry Date.'
+);
+
+return;
+
+}
+
+
+let result;
+
+
+if(id){
+
+result =
+await db
+.from('members')
+.update(member)
+.eq('id',id);
+
+}else{
+
+result =
+await db
+.from('members')
+.insert([member]);
+
+}
+
+
+if(result.error){
+
+alert(
+'Could not save member: ' +
+result.error.message
+);
+
+return;
+
+}
+
+
+alert(
+id
+? 'Member updated successfully.'
+: 'Member added successfully.'
+);
+
+
+clearMemberForm();
+
+loadMembers();
+
+}
+
+
+/* EDIT */
+
+async function editMember(id){
+
+const {data,error} =
+await db
+.from('members')
+.select('*')
+.eq('id',id)
+.single();
+
+
+if(error){
+
+alert('Unable to load member.');
+
+return;
+
+}
+
+
+document.getElementById('editId').value =
+data.id;
+
+document.getElementById('memberNo').value =
+data.membership_no || '';
+
+document.getElementById('memberName').value =
+data.member_name || '';
+
+document.getElementById('pharmacyName').value =
+data.pharmacy_name || '';
+
+document.getElementById('memberAddress').value =
+data.address || '';
+
+document.getElementById('photoUrl').value =
+data.photo_url || '';
+
+document.getElementById('memberStatus').value =
+data.status || 'active';
+
+document.getElementById('expiryDate').value =
+data.expiry_date || '';
+
+document.getElementById('saveMemberBtn')
+.textContent =
+'💾 Update Member';
+
+document.getElementById('cancelEditBtn')
+.classList.remove('hidden');
+
+}
+
+
+/* DELETE */
+
+async function deleteMember(id){
+
+if(
+!confirm(
+'Are you sure you want to delete this member?'
+)
+)return;
+
+
+const {error} =
+await db
+.from('members')
+.delete()
+.eq('id',id);
+
+
+if(error){
+
+alert(
+'Delete failed: ' +
+error.message
+);
+
+return;
+
+}
+
+
+loadMembers();
+
+}
+
+
+/* CLEAR FORM */
+
+function clearMemberForm(){
+
+document.getElementById('editId').value='';
+
+document.getElementById('memberNo').value='';
+
+document.getElementById('memberName').value='';
+
+document.getElementById('pharmacyName').value='';
+
+document.getElementById('memberAddress').value='';
+
+document.getElementById('photoUrl').value='';
+
+document.getElementById('memberStatus').value='active';
+
+document.getElementById('expiryDate').value='';
+
+document.getElementById('saveMemberBtn')
+.textContent =
+'➕ Add Member';
+
+document.getElementById('cancelEditBtn')
+.classList.add('hidden');
+
+}
+
+
+document
+.getElementById('cancelEditBtn')
+.addEventListener(
+'click',
+clearMemberForm
+);
+
+
+/* LOGOUT */
+
+document
+.getElementById('logoutBtn')
+.addEventListener(
+'click',
+async()=>{
+
+await db.auth.signOut();
+
+document
+.getElementById('adminPanel')
+.classList.remove('show');
+
+document
+.getElementById('adminLogin')
+.style.display='block';
+
+clearMemberForm();
+
+}
+);
+
+
+/* SERVICE WORKER */
+
+if('serviceWorker' in navigator){
+
+navigator.serviceWorker
+.register('sw.js')
+.catch(()=>{});
+
+}
+
 </script>
+
 </body>
 </html>
